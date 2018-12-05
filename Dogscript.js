@@ -112,3 +112,7 @@ window.addEventListener("keydown", function (event) {
         dog.emit('jump')
     }
 })
+
+dog.addEventListener('click', function() {
+  dog.emit('bounce');
+});
