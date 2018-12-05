@@ -7,6 +7,7 @@ var dog = sceneEl.querySelector('#dog');
 
 addBounceAnimation(dog)
 addJumpAnimation(dog)
+//addRandomWalk(dog)
 
 function addBounceAnimation(entity) {
     var dogScale = dog.getAttribute('scale');
@@ -96,6 +97,33 @@ function addJumpAnimation(entity) {
     })
 }
 
+function addRandomWalk(entity) {
+    var dogPos = dog.getAttribute('position')
+    var dogPos2 = Object.assign({}, dogPos);
+
+
+    len = 1000;
+    dogPos2.x += Math.random() * 2 - 1
+    dogPos2.z += Math.random() * 2 - 1
+
+
+    entity.setAttribute('animation__pos1',{
+        property:'position',
+        from: vec3tostr(dogPos),
+        to: vec3tostr(dogPos2),
+        startEvents: 'walk',
+        dur: len
+    })
+
+    entity.setAttribute('animation__pos2',{
+        property:'position',
+        from: vec3tostr(dogPos2),
+        to: vec3tostr(dogPos),
+        startEvents: 'walk',
+        delay: len,
+        dur: len
+    })
+}
 
 function vec3tostr(vec3){
     return vec3.x + " " + vec3.y + " " + vec3.z
@@ -111,8 +139,14 @@ window.addEventListener("keydown", function (event) {
         console.log("jump")
         dog.emit('jump')
     }
+
+	if(event.key == "t"){
+        addRandomWalk(dog)
+        console.log("walk")
+        dog.emit('walk')
+    }
 })
 
 dog.addEventListener('click', function() {
-  dog.emit('bounce');
+    dog.emit('bounce');
 });
