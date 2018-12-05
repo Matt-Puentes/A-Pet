@@ -6,6 +6,7 @@ var dog = sceneEl.querySelector('#dog');
 
 
 addBounceAnimation(dog)
+addJumpAnimation(dog)
 
 function addBounceAnimation(entity) {
     var dogScale = dog.getAttribute('scale');
@@ -50,13 +51,64 @@ function addBounceAnimation(entity) {
     })
 }
 
+function addJumpAnimation(entity) {
+    var dogPos = dog.getAttribute('position')
+    var dogPos2 = Object.assign({}, dogPos);
+    var dogRot = dog.getAttribute('rotation')
+    var dogRot2 = Object.assign({}, dogRot);
+    var len = 140
+
+    dogPos2.y += 1
+    dogRot2.x += -40
+
+    entity.setAttribute('animation__pos1',{
+        property:'position',
+        from: vec3tostr(dogPos),
+        to: vec3tostr(dogPos2),
+        startEvents: 'jump',
+        dur: len
+    })
+
+    entity.setAttribute('animation__pos2',{
+        property:'position',
+        from: vec3tostr(dogPos2),
+        to: vec3tostr(dogPos),
+        startEvents: 'jump',
+        delay: len,
+        dur: len
+    })
+
+    entity.setAttribute('animation__rot1', {
+        property: 'rotation',
+        from: vec3tostr(dogRot),
+        to: vec3tostr(dogRot2),
+        startEvents: 'jump',
+        dur: len
+    })
+
+    entity.setAttribute('animation__rot2', {
+        property: 'rotation',
+        from: vec3tostr(dogRot2),
+        to: vec3tostr(dogRot),
+        startEvents: 'jump',
+        delay: len,
+        dur: len
+    })
+}
+
+
 function vec3tostr(vec3){
     return vec3.x + " " + vec3.y + " " + vec3.z
 }
 
 window.addEventListener("keydown", function (event) {
 	if(event.key == "r"){
-        console.log("jjkm")
+        console.log("bounce")
         dog.emit('bounce')
+    }
+
+	if(event.key == "j"){
+        console.log("jump")
+        dog.emit('jump')
     }
 })
