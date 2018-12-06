@@ -1,8 +1,11 @@
+var sceneEl;
+var dog;
+var dogWrapper;
 function main(){
     console.log("Game begin!")
-    nextTick = -1
-    var sceneEl = document.querySelector('a-scene');
-    var dog = sceneEl.querySelector('#dog');
+    sceneEl = document.querySelector('a-scene');
+    dog = sceneEl.querySelector('#dog');
+    dogWrapper = sceneEl.querySelector('#dog-wrapper');
 
     loadDog()
     addBounceAnimation(dog)
@@ -12,7 +15,21 @@ function main(){
         console.log("bounce")
         dog.emit('bounce');
     });
+
+    dogwalk()
 }
+
+var nextTick = -1
+function dogwalk(){
+    addRandomWalk(dogWrapper)
+    dog.emit('walk')
+
+
+    if(nextTick != -1)
+        clearTimeout(nextTick)
+    nextTick = setTimeout(dogwalk, 2000);
+}
+
 
 function loadDog(){
     dog.setAttribute('scale', {x: .5, y: .5, z: .5}, true);
@@ -117,26 +134,35 @@ function addRandomWalk(entity) {
 
 
     len = 1000;
-    dogPos2.x += Math.random() * 2 - 1
-    dogPos2.z += Math.random() * 2 - 1
+    var dx = (Math.random() * 4) - 2
+    var dz = (Math.random() * 4) - 2
+    dogPos2.x += dx
+    dogPos2.z += dz
 
+    var dogRot = entity.getAttribute('position')
+    var dogRot2 = Object.assign({}, dogPos);
+
+    var rotation = Math.atan2(dz,dx)
+    console.log(rotation)
+    dogRot2.y = dogRot2.y - (rotation * 180 / Math.PI)
+
+    dogWrapper.setAttribute('animation__rot1',{
+        property:'rotation',
+        from: vec3tostr(dogRot),
+        to: vec3tostr(dogRot2),
+        startEvents: 'walk',
+        dur: 300
+    })
 
     entity.setAttribute('animation__pos1',{
         property:'position',
         from: vec3tostr(dogPos),
         to: vec3tostr(dogPos2),
         startEvents: 'walk',
+        delay: 300,
         dur: len
     })
 
-    entity.setAttribute('animation__pos2',{
-        property:'position',
-        from: vec3tostr(dogPos2),
-        to: vec3tostr(dogPos),
-        startEvents: 'walk',
-        delay: len,
-        dur: len
-    })
 }
 
 function vec3tostr(vec3){
@@ -152,11 +178,5 @@ window.addEventListener("keydown", function (event) {
 	if(event.key == "j"){
         console.log("jump")
         dog.emit('jump')
-    }
-
-	if(event.key == "t"){
-        addRandomWalk(dog)
-        console.log("walk")
-        dog.emit('walk')
     }
 })
