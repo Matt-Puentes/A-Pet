@@ -203,8 +203,8 @@ function addRandomWalk(entity) {
 
 
     len = 1000;
-    var dx = (Math.random() * 4) - 2
-    var dz = (Math.random() * 4) - 2
+    var dx = (Math.random() * 3) - 1.5
+    var dz = (Math.random() * 3) - 1.5
     dogPos2.x += dx
     dogPos2.z += dz
 
