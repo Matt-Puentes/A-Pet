@@ -13,8 +13,8 @@ function main(){
     addSadAnimation(dog)
 
     dog.addEventListener('click', function() {
-        console.log("bounce")
         dog.emit('bounce');
+        dog.emit('jump');
     });
 
     dogwalk()
@@ -22,10 +22,10 @@ function main(){
 
 var nextTick = -1
 function dogwalk(){
-    addRandomWalk(dogWrapper)
-    dog.emit('walk')
-
-
+    if(Math.random() > 0.5){
+        addRandomWalk(dogWrapper)
+        dog.emit('walk')
+    }
     if(nextTick != -1)
         clearTimeout(nextTick)
     nextTick = setTimeout(dogwalk, 2000);
@@ -254,11 +254,4 @@ window.addEventListener("keydown", function (event) {
         console.log("sad")
         dog.emit('sad')
     }
-/*
-	if(event.key == "t"){
-        addRandomWalk(dog)
-        console.log("walk")
-        dog.emit('walk')
-    }
-    */
 })
