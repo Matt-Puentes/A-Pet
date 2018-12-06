@@ -21,7 +21,7 @@ function addBounceAnimation(entity) {
     dogScale2.z = dogScale2.z * 1.10
     var dogPos = entity.getAttribute('position');
     var dogPos2 = Object.assign({}, dogPos);
-    dogPos2.y = dogPos2.y + (entity.getAttribute('geometry').height * 0.5)
+    dogPos2.y = dogPos2.y + 0.2//(entity.getAttribute('geometry').height * 0.5)
     var len = 500
 
     console.log(dogScale)
