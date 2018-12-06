@@ -7,6 +7,11 @@ function main(){
     loadDog()
     addBounceAnimation(dog)
     addJumpAnimation(dog)
+
+    dog.addEventListener('click', function() {
+        console.log("bounce")
+        dog.emit('bounce');
+    });
 }
 
 function loadDog(){
@@ -155,7 +160,3 @@ window.addEventListener("keydown", function (event) {
         dog.emit('walk')
     }
 })
-
-dog.addEventListener('click', function() {
-    dog.emit('bounce');
-});

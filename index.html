@@ -8,7 +8,6 @@
         <script src="https://unpkg.com/aframe-animation-component@^5.1.2/dist/aframe-animation-component.min.js"></script>
         <script src="https://rawgit.com/feiss/aframe-environment-component/master/dist/aframe-environment-component.min.js"></script>
 
-
     </head>
     <script src="Dogscript.js"></script>
     <body onload="main()">
@@ -17,19 +16,14 @@
                 <a-asset-item id="duck" src="Duck.gltf"></a-asset-item>
             </a-assets>
 
-
             <!-- <a-entity id="dog" position="2 2 2" scale="0.25 0.25 0.25" gltf-model="#duck" ></a-entity> -->
             <a-entity id="dog" scale="0.5 0.5 0.5" gltf-model="url(Duck.gltf)"></a-entity>
             <!-- <a-gltf-model id="dog" position="2 2 2" scale="0.25 0.25 0.25" gltf-model="#duck" ></a-gltf-model> -->
-            <!-- <a-box src="FUR.jpg" id="dog" position="-1 0.5 -3" rotation="0 45 0"></a-box> -->
+            <a-box src="FUR.jpg" id="dog2" position="-1 0.5 -3" rotation="0 45 0"></a-box>
             <a-sky environment="preset:forest"></a-sky>
 
-            <a-camera  position="0 1 4"
-                cursor-visible="true"
-                cursor-scale="2"
-                cursor-color="#0095DD"
-                cursor-opacity="0.5">
-                <!-- <a-cursor></a-cursor> -->
+            <a-camera  position="0 1 4">
+                <a-cursor></a-cursor>
             </a-camera>
         </a-scene>
     </body>
