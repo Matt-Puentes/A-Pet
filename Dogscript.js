@@ -6,6 +6,8 @@ var isWalking = false
 var isEmoting = false
 // maybe happiness range from 0 to 10
 var happiness = 5
+var squeak = new Audio('squeeky.wav');
+var longsqueak = new Audio('longsqueak.wav');
 function main(){
     console.log("Game begin!?!!")
     sceneEl = document.querySelector('a-scene');
@@ -38,6 +40,7 @@ function main(){
 
 function onclick() {
     loadDog();
+    console.log(isEmoting)
     if (!isEmoting) {
         if (happiness > 3) {
             if (Math.random() > 0.5) {
