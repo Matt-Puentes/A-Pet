@@ -1,6 +1,8 @@
 var sceneEl;
 var dog;
 var dogWrapper;
+var squeak = new Audio('squeeky.wav');
+var longsqueak = new Audio('longsqueak.wav');
 function main(){
     console.log("Game begin!")
     sceneEl = document.querySelector('a-scene');
@@ -20,9 +22,11 @@ function main(){
 function onclick() {
     loadDog();
     if(Math.random() > 0.5){
+        longsqueak.play();
         dog.emit('bounce');
     }
     else{
+        squeak.play();
         dog.emit('jump');
     }
 }
@@ -167,6 +171,8 @@ function addJumpAnimation(entity) {
 
     dogPos2.y += 1
     dogRot2.z += 20
+
+    squeak.play();
 
     entity.setAttribute('animation__pos1_j',{
         property:'position',
