@@ -1,49 +1,79 @@
 var sceneEl;
 var dog;
 var dogWrapper;
+var camera;
+var isWalking = false
+var isEmoting = false
+// maybe happiness range from 0 to 10
+var happiness = 5
 function main(){
-    console.log("Game begin!")
+    console.log("Game begin!?!!")
     sceneEl = document.querySelector('a-scene');
     dog = sceneEl.querySelector('#dog');
+    camera = sceneEl.querySelector('a-camera')
     dogWrapper = sceneEl.querySelector('#dog-wrapper');
-
     loadDog()
     addBounceAnimation(dog)
     addJumpAnimation(dog)
     addSadAnimation(dog)
-
     dog.addEventListener('click', onclick);
-
+    dogWrapper.addEventListener('animationcomplete__pos1_w', function (e) {
+        console.log('walk ended')
+        isWalking = false
+    });
+    dog.addEventListener('animationcomplete__pos2_s', function (e) {
+        console.log('sad ended')
+        isEmoting = false
+    });
+    dog.addEventListener('animationcomplete__pos2', function (e) {
+        console.log('bounce ended')
+        isEmoting = false
+    });
+    dog.addEventListener('animationcomplete__pos2_j', function (e) {
+        console.log('jump ended')
+        isEmoting = false
+    });
     dogwalk()
 }
 
 function onclick() {
     loadDog();
-    if(Math.random() > 0.5){
-        dog.emit('bounce');
-    }
-    else{
-        dog.emit('jump');
+    if (!isEmoting) {
+        if (happiness > 3) {
+            if (Math.random() > 0.5) {
+                dog.emit('bounce');
+            }
+            else {
+                dog.emit('jump');
+            }
+            happiness += 0.8
+        } else {
+            dog.emit('sad')
+            happiness += 0.3
+        }
+        isEmoting = true
     }
 }
 
 var nextTick = -1
 function dogwalk(){
-    if(Math.random() > 0.5){
-        addRandomWalk(dogWrapper)
-        dog.emit('walk')
+    console.log(isWalking)
+    if (!isWalking) {
+        if (Math.random() > 0.5) {
+            addRandomWalk(dogWrapper)
+            dog.emit('walk')
+            happiness -= 1
+            isWalking = true
+        }
+        if (nextTick != -1)
+            clearTimeout(nextTick)
+        nextTick = setTimeout(dogwalk, 2000);
     }
-    if(nextTick != -1)
-        clearTimeout(nextTick)
-    nextTick = setTimeout(dogwalk, 2000);
 }
-
 
 function loadDog(){
     console.log("load")
-    // dog.setAttribute('scale', {x: .25, y: .25, z: .25}, true);
     dog.setAttribute('scale', {x: .5, y: .5, z: .5}, true);
-    // dogWrapper.setAttribute('scale', {x: 1, y: 1, z: 1}, true);
 }
 
 function addBounceAnimation(entity) {
@@ -206,22 +236,44 @@ function addJumpAnimation(entity) {
 function addRandomWalk(entity) {
     var dogPos = entity.getAttribute('position')
     var dogPos2 = Object.assign({}, dogPos);
+    var camPos = camera.getAttribute('position')
 
 
-    len = 1000;
     var dx = (Math.random() * 3) - 1.5
     var dz = (Math.random() * 3) - 1.5
-    dogPos2.x += dx
-    dogPos2.z += dz
+    dogPos2.x = camPos.x + dx
+    dogPos2.z = camPos.z + dz 
+    console.log("camera positions")
+    console.log(camPos.x)
 
-    var dogRot = entity.getAttribute('position')
+    var dogRot = entity.getAttribute('rotation')
+    //dogRot.x = 0
+    //dogRot.z = 0
     var dogRot2 = Object.assign({}, dogPos);
 
-    var rotation = Math.atan2(dz,dx)
+    var rotation = Math.atan2(dogPos2.z - dogPos.z, dogPos2.x - dogPos.x)
+    var speed = happiness / 5
+    if (speed < 0.4) speed = 0.4
+    var distance = Math.pow(Math.pow(dogPos2.z - dogPos.z, 2) + Math.pow(dogPos2.x - dogPos.x, 2), 0.5)
+    len = 400 * distance / speed
     console.log(rotation)
+    dogRot2.x = 0
     dogRot2.y = dogRot2.y - (rotation * 180 / Math.PI)
+    dogRot2.z = 0
+    console.log("rotations 1")
+    console.log(dogRot.x)
+    console.log(dogRot.y)
+    console.log(dogRot.z)
+    console.log("rotations 2")
+    console.log(dogRot2.x)
+    console.log(dogRot2.y)
+    console.log(dogRot2.z)
 
-    dogWrapper.setAttribute('animation__rot1',{
+    //dogRot2.x = 0
+    //dogRot2.z = 0
+
+
+    dogWrapper.setAttribute('animation__rot1_w',{
         property:'rotation',
         from: vec3tostr(dogRot),
         to: vec3tostr(dogRot2),
@@ -229,7 +281,7 @@ function addRandomWalk(entity) {
         dur: 300
     })
 
-    entity.setAttribute('animation__pos1',{
+    entity.setAttribute('animation__pos1_w',{
         property:'position',
         from: vec3tostr(dogPos),
         to: vec3tostr(dogPos2),
@@ -237,7 +289,6 @@ function addRandomWalk(entity) {
         delay: 300,
         dur: len
     })
-
 }
 
 function vec3tostr(vec3){
@@ -245,17 +296,17 @@ function vec3tostr(vec3){
 }
 
 window.addEventListener("keydown", function (event) {
-	if(event.key == "r"){
+	if (event.key == "r") {
         console.log("bounce")
         dog.emit('bounce')
     }
 
-	if(event.key == "j"){
+	if (event.key == "j") {
         console.log("jump")
         dog.emit('jump')
     }
 
-	if(event.key == "l"){
+	if (event.key == "l") {
         //addRandomWalk(dog)
         console.log("sad")
         dog.emit('sad')
