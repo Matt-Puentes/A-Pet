@@ -25,7 +25,7 @@ function main(){
         console.log('walk ended')
         isWalking = false
     });
-    dog.addEventListener('animationcomplete__pos2_s', function (e) {
+    dog.addEventListener('animationcomplete__rot2_s', function (e) {
         console.log('sad ended')
         isEmoting = false
     });
@@ -75,8 +75,8 @@ function dogwalk(){
 
         if (nextTick != -1)
             clearTimeout(nextTick)
-        nextTick = setTimeout(dogwalk, 2000);
     }
+    nextTick = setTimeout(dogwalk, 2000);
 }
 
 function loadDog(){
