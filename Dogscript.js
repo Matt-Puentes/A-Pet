@@ -6,6 +6,7 @@ var isWalking = false
 var isEmoting = false
 // maybe happiness range from 0 to 10
 var happiness = 5
+var gui
 var squeak = new Audio('squeeky.wav');
 var longsqueak = new Audio('longsqueak.wav');
 function main(){
@@ -14,6 +15,7 @@ function main(){
     dog = sceneEl.querySelector('#dog');
     camera = sceneEl.querySelector('a-camera')
     dogWrapper = sceneEl.querySelector('#dog-wrapper');
+    gui = sceneEl.querySelector('#gui-plane');
     loadDog()
     addBounceAnimation(dog)
     addJumpAnimation(dog)
@@ -40,8 +42,8 @@ function main(){
 
 function onclick() {
     loadDog();
-    console.log(isEmoting)
     if (!isEmoting) {
+        longsqueak.play();
         if (happiness > 3) {
             if (Math.random() > 0.5) {
                 dog.emit('bounce');
@@ -68,6 +70,9 @@ function dogwalk(){
             happiness -= 1
             isWalking = true
         }
+
+        gui-plane
+
         if (nextTick != -1)
             clearTimeout(nextTick)
         nextTick = setTimeout(dogwalk, 2000);
