@@ -71,7 +71,8 @@ function dogwalk(){
             isWalking = true
         }
 
-        gui-plane
+
+        gui.setAttribute("rotation", "1 1 1")
 
         if (nextTick != -1)
             clearTimeout(nextTick)
