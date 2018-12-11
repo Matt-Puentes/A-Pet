@@ -6,6 +6,8 @@ var isWalking = false
 var isEmoting = false
 // maybe happiness range from 0 to 10
 var happiness = 5
+var squeak = new Audio('squeeky.wav');
+var longsqueak = new Audio('longsqueak.wav');
 function main(){
     console.log("Game begin!?!!")
     sceneEl = document.querySelector('a-scene');
@@ -38,6 +40,7 @@ function main(){
 
 function onclick() {
     loadDog();
+    console.log(isEmoting)
     if (!isEmoting) {
         if (happiness > 3) {
             if (Math.random() > 0.5) {
@@ -198,6 +201,8 @@ function addJumpAnimation(entity) {
     dogPos2.y += 1
     dogRot2.z += 20
 
+    squeak.play();
+
     entity.setAttribute('animation__pos1_j',{
         property:'position',
         from: vec3tostr(dogPos),
@@ -242,7 +247,7 @@ function addRandomWalk(entity) {
     var dx = (Math.random() * 3) - 1.5
     var dz = (Math.random() * 3) - 1.5
     dogPos2.x = camPos.x + dx
-    dogPos2.z = camPos.z + dz 
+    dogPos2.z = camPos.z + dz
     console.log("camera positions")
     console.log(camPos.x)
 
