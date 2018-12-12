@@ -8,10 +8,47 @@ var isEmoting = false
 var foodOut = false
 var targetingFood = false
 var happiness = 5
-var gui
 var squeak = new Audio('squeeky.wav');
 var longsqueak = new Audio('longsqueak.wav');
 var foodPos = {x: 0, y: 0, z: 0}
+
+function init(){
+    sceneEl = document.querySelector('a-scene');
+    dog = sceneEl.querySelector('#dog');
+    food = sceneEl.querySelector('#food');
+    food.setAttribute('visible', false)
+    camera = sceneEl.querySelector('a-camera')
+    dogWrapper = sceneEl.querySelector('#dog-wrapper');
+    loadDog()
+    addBounceAnimation(dog)
+    addJumpAnimation(dog)
+    addSadAnimation(dog)
+    dog.addEventListener('click', onclick);
+    dogWrapper.addEventListener('animationcomplete__pos1_w', function (e) {
+        isWalking = false
+        if (targetingFood) {
+            targetingFood = false
+            foodOut = false
+            food.setAttribute('visible', false)
+        }
+    });
+    dog.addEventListener('animationcomplete__rot2_s', function (e) {
+        isEmoting = false
+    });
+    dog.addEventListener('animationcomplete__pos2', function (e) {
+        isEmoting = false
+    });
+    dog.addEventListener('animationcomplete__pos2_j', function (e) {
+        isEmoting = false
+    });
+
+    setupClickable("Call")
+    setupClickable("Feed")
+    setupClickable("Throw")
+
+    isWalking = false
+    dogwalk()
+}
 
 // happiness ranges from 0 to 10
 function change_happiness(num) {
@@ -23,89 +60,27 @@ function change_happiness(num) {
     }
 }
 
-var guiTimeout = -1
-function main(){
-    console.log("Game begin!")
-    sceneEl = document.querySelector('a-scene');
-    dog = sceneEl.querySelector('#dog');
-    food = sceneEl.querySelector('#food');
-    food.setAttribute('visible', false)
-    camera = sceneEl.querySelector('a-camera')
-    dogWrapper = sceneEl.querySelector('#dog-wrapper');
-    gui = sceneEl.querySelector('#gui-plane');
-    loadDog()
-    addBounceAnimation(dog)
-    addJumpAnimation(dog)
-    addSadAnimation(dog)
-    dog.addEventListener('click', onclick);
-    dogWrapper.addEventListener('animationcomplete__pos1_w', function (e) {
-        // console.log('walk ended')
-        isWalking = false
-        if (targetingFood) {
-            targetingFood = false
-            foodOut = false
-            food.setAttribute('visible', false)
-        }
-    });
-    dog.addEventListener('animationcomplete__rot2_s', function (e) {
-        // console.log('sad ended')
-        isEmoting = false
-    });
-    dog.addEventListener('animationcomplete__pos2', function (e) {
-        // console.log('bounce ended')
-        isEmoting = false
-    });
-    dog.addEventListener('animationcomplete__pos2_j', function (e) {
-        // console.log('jump ended')
-        isEmoting = false
-    });
-
-    option1.addEventListener('mouseenter', function(e){
-        option1.setAttribute("color", "yellow")
+function setupClickable(id){
+    var id = "#" + id
+    document.querySelector(id).addEventListener('mouseenter', function(e){
+        document.querySelector(id).setAttribute('color', 'yellow')
     })
-    option1.addEventListener('mouseleave', function(e){
-        option1.setAttribute("color", "white")
+    document.querySelector(id).addEventListener('mouseleave', function(e){
+        document.querySelector(id).setAttribute('color', 'white')
     })
-    option2.addEventListener('mouseenter', function(e){
-        option2.setAttribute("color", "yellow")
+    document.querySelector(id).addEventListener('click', function(e){
+        console.log(id)
     })
-    option2.addEventListener('mouseleave', function(e){
-        option2.setAttribute("color", "white")
-    })
-    option3.addEventListener('mouseenter', function(e){
-        option3.setAttribute("color", "yellow")
-    })
-    option3.addEventListener('mouseleave', function(e){
-        option3.setAttribute("color", "white")
-    })
-
-
-    dogwalk()
-}
-
-function closeGui(){
-        gui.setAttribute("visible", false)
 }
 
 function onclick() {
     loadDog();
 
-
-    if (guiTimeout != -1)
-        clearTimeout(guiTimeout)
-
     var camera_rotation = camera.getAttribute("rotation")
     var dog_rotation = dogWrapper.getAttribute("rotation")
-    gui.setAttribute("visible", true)
-    console.log(camera_rotation)
-    console.log(dog_rotation)
     var newRot = (camera_rotation.x - dog_rotation.x) + " " +
         (camera_rotation.y - dog_rotation.y) + " " +
         ( camera_rotation.z - dog_rotation.z);
-    console.log(newRot)
-
-    gui.setAttribute("rotation", newRot)
-    guiTimeout = setTimeout(closeGui, 5000);
 
     if (!isEmoting) {
         longsqueak.play();
@@ -128,17 +103,17 @@ function onclick() {
 var nextTick = -1
 function dogwalk(){
     if (!isWalking) {
-        if (Math.random() > 0.5) {
+        if (Math.random() > 0.25) {
             addRandomWalk(dogWrapper)
             dog.emit('walk')
-            //happiness -= 1
             change_happiness(-1)
             isWalking = true
         }
+
         if (nextTick != -1)
             clearTimeout(nextTick)
     }
-// duck waits around longer when he's not happy
+    // duck waits around longer when he's not happy
     nextTick = setTimeout(dogwalk, 1000 - happiness / 11);
 }
 
@@ -154,7 +129,7 @@ function addBounceAnimation(entity) {
     dogScale2.z = 0.5 * 0.8
     var dogPos = entity.getAttribute('position');
     var dogPos2 = Object.assign({}, dogPos);
-    dogPos2.y = dogPos2.y + 0.2//(entity.getAttribute('geometry').height * 0.5)
+    dogPos2.y = dogPos2.y + 0.2;
     var len = 500
 
     entity.setAttribute('animation__scale1',{
@@ -309,7 +284,6 @@ function addRandomWalk(entity) {
     var dogPos2 = Object.assign({}, dogPos);
     var camPos = camera.getAttribute('position')
 
-
     var dx = (Math.random() * 3) - 1.5
     var dz = (Math.random() * 3) - 1.5
     if (!foodOut) {
@@ -319,36 +293,23 @@ function addRandomWalk(entity) {
         dogPos2.x = foodPos.x
         dogPos2.z = foodPos.z
         targetingFood = true
-        console.log("going for food")
     }
-    console.log("food test")
-    console.log(foodPos.x)
-    console.log(dogPos2.x)
-    console.log(foodPos.z)
-    console.log(dogPos2.z)
-
 
     var dogRot = entity.getAttribute('rotation')
-    //dogRot.x = 0
-    //dogRot.z = 0
     var dogRot2 = Object.assign({}, dogPos);
 
     var rotation = Math.atan2(dogPos2.z - dogPos.z, dogPos2.x - dogPos.x)
     var speed = happiness / 5
-    if (speed < 0.4) speed = 0.4
-    var distance = Math.pow(Math.pow(dogPos2.z - dogPos.z, 2) + Math.pow(dogPos2.x - dogPos.x, 2), 0.5)
+    if (speed < 0.4)
+        speed = 0.4
+
+    var distance = Math.pow( Math.pow(dogPos2.z - dogPos.z, 2) +
+                             Math.pow(dogPos2.x - dogPos.x, 2), 0.5)
+
     len = 400 * distance / speed
     dogRot2.x = 0
     dogRot2.y = dogRot2.y - (rotation * 180 / Math.PI)
     dogRot2.z = 0
-    // console.log("rotations 1")
-    // console.log(dogRot.x)
-    // console.log(dogRot.y)
-    // console.log(dogRot.z)
-    // console.log("rotations 2")
-    // console.log(dogRot2.x)
-    // console.log(dogRot2.y)
-    // console.log(dogRot2.z)
 
     dogWrapper.setAttribute('animation__rot1_w',{
         property:'rotation',
@@ -368,24 +329,23 @@ function addRandomWalk(entity) {
     })
 }
 
-function d2r(num) {
-    return num / 180 * Math.PI
-}
-
 function tossFood() {
     camPos = camera.getAttribute('position')
     camRot = camera.getAttribute('rotation')
     if (-camRot.x < 85) {
         dist = camPos.y / Math.tan(d2r(-camRot.x))
-        foodPos = {x: camPos.x + dist * Math.cos(d2r(camRot.y) + Math.PI/2), y: 0,
-                   z: camPos.z + dist * -Math.sin(d2r(camRot.y) + Math.PI/2)}
-        console.log(foodPos)
-        food.setAttribute('position', foodPos, true)
-        console.log('food position attribute')
-        console.log(food.getAttribute('position'))
+        foodPos = { x: camPos.x + dist * Math.cos(d2r(camRot.y) + Math.PI/2),
+                    y: 0,
+                    z: camPos.z + dist * -Math.sin(d2r(camRot.y) + Math.PI/2)}
         foodOut = true
+
+        food.setAttribute('position', foodPos, true)
         food.setAttribute('visible', true)
     }
+}
+
+function d2r(num) {
+    return num / 180 * Math.PI
 }
 
 function vec3tostr(vec3){
@@ -393,23 +353,18 @@ function vec3tostr(vec3){
 }
 
 window.addEventListener("keydown", function (event) {
-	if (event.key == "r") {
-        // console.log("bounce")
-        dog.emit('bounce')
-    }
-
-	if (event.key == "j") {
-        // console.log("jump")
-        dog.emit('jump')
-    }
-
-	if (event.key == "l") {
-        //addRandomWalk(dog)
-        // console.log("sad")
-        dog.emit('sad')
-    }
-	if (event.key == "t") {
-        console.log("throw")
-        tossFood()
+    switch(event.key){
+        case "r":
+            dog.emit('bounce')
+            break;
+        case "j":
+            dog.emit('jump')
+            break;
+        case "l":
+            dog.emit('sad')
+            break;
+        case "t":
+            tossFood()
+            break;
     }
 })
