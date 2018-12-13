@@ -195,9 +195,9 @@ function addSadAnimation(entity) {
 
     var dogScale = entity.getAttribute('scale');
     var dogScale2 = Object.assign({}, dogScale);
-    dogScale2.y = dogScale2.y * 0.8
-    dogScale2.x = dogScale2.x * 1.2
-    dogScale2.z = dogScale2.z * 1.2
+    dogScale2.y = 0.5 * 0.8
+    dogScale2.x = 0.5 * 1.2
+    dogScale2.z = 0.5 * 1.2
 
     entity.setAttribute('animation__pos1_s',{
         property:'position',
@@ -235,7 +235,7 @@ function addSadAnimation(entity) {
 
     entity.setAttribute('animation__scale1_s',{
         property:'scale',
-        from: vec3tostr(dogScale),
+        from: "0.5 0.5 0.5",
         to: vec3tostr(dogScale2),
         startEvents: 'sad',
         dur: sadLen
@@ -244,7 +244,7 @@ function addSadAnimation(entity) {
     entity.setAttribute('animation__scale2_s',{
         property:'scale',
         from: vec3tostr(dogScale2),
-        to: vec3tostr(dogScale),
+        to: "0.5 0.5 0.5",
         startEvents: 'sad',
         delay: sadLen * 2,
         dur: sadLen
