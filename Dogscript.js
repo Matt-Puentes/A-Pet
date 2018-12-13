@@ -48,6 +48,13 @@ function init(){
 
     isWalking = false
     dogwalk()
+    setTimeout(loadTimeout, 5000);
+}
+
+function loadTimeout(){
+    console.log("loadTimeout")
+    isWalking = false
+    dogwalk()
 }
 
 // happiness ranges from 0 to 10
@@ -83,19 +90,19 @@ function onclick() {
         ( camera_rotation.z - dog_rotation.z);
 
     if (!isEmoting) {
+        longsqueak.play();
+
         if (happiness > 3) {
-            squeak.play();
             if (Math.random() > 0.5) {
                 dog.emit('bounce');
             }
             else {
                 dog.emit('jump');
             }
-            change_happiness(1.5)
+            change_happiness(0.8)
         } else {
-            longsqueak.play()
             dog.emit('sad')
-            change_happiness(1)
+            change_happiness(0.3)
         }
         isEmoting = true
     }
@@ -253,8 +260,6 @@ function addJumpAnimation(entity) {
 
     dogPos2.y += 1
     dogRot2.z += 20
-
-    squeak.play();
 
     entity.setAttribute('animation__pos1_j',{
         property:'position',
