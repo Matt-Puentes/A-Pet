@@ -64,18 +64,19 @@ function main(){
 function onclick() {
     loadDog();
     if (!isEmoting) {
-        longsqueak.play();
         if (happiness > 3) {
+            squeak.play();
             if (Math.random() > 0.5) {
                 dog.emit('bounce');
             }
             else {
                 dog.emit('jump');
             }
-            change_happiness(0.8)
+            change_happiness(1.5)
         } else {
+            longsqueak.play()
             dog.emit('sad')
-            change_happiness(0.3)
+            change_happiness(1)
         }
         isEmoting = true
     }
@@ -89,7 +90,7 @@ function dogwalk(){
             addRandomWalk(dogWrapper)
             dog.emit('walk')
             //happiness -= 1
-            change_happiness(-1)
+            change_happiness(-0.3)
             isWalking = true
         }
 
