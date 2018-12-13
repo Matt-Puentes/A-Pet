@@ -105,10 +105,10 @@ function onclick() {
             else {
                 dog.emit('jump');
             }
-            change_happiness(0.8)
+            change_happiness(2)
         } else {
             dog.emit('sad')
-            change_happiness(0.3)
+            change_happiness(1)
         }
         isEmoting = true
     }
@@ -120,7 +120,7 @@ function dogwalk(){
         if (Math.random() > 0.25) {
             addRandomWalk(dogWrapper)
             dog.emit('walk')
-            change_happiness(-1)
+            change_happiness(-0.8)
             isWalking = true
         }
 
