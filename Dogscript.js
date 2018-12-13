@@ -3,6 +3,7 @@ var dog;
 var food;
 var dogWrapper;
 var camera;
+var ground;
 var isWalking = false
 var isEmoting = false
 var foodOut = false
@@ -13,17 +14,20 @@ var longsqueak = new Audio('longsqueak.wav');
 var foodPos = {x: 0, y: 0, z: 0}
 
 function init(){
+    console.log("game begin")
     sceneEl = document.querySelector('a-scene');
     dog = sceneEl.querySelector('#dog');
     food = sceneEl.querySelector('#food');
     food.setAttribute('visible', false)
     camera = sceneEl.querySelector('a-camera')
+    ground = sceneEl.querySelector('a-sky')
     dogWrapper = sceneEl.querySelector('#dog-wrapper');
     loadDog()
     addBounceAnimation(dog)
     addJumpAnimation(dog)
     addSadAnimation(dog)
     dog.addEventListener('click', onclick);
+    ground.addEventListener('click', tossFood);
     dogWrapper.addEventListener('animationcomplete__pos1_w', function (e) {
         isWalking = false
         if (targetingFood) {
