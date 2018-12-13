@@ -165,6 +165,17 @@ function addBounceAnimation(entity) {
     })
 }
 
+function callDuck() {
+    var camPos = camera.getAttribute('position')
+    foodPos = camPos
+    console.log(foodPos)
+    console.log(camPos)
+    foodOut = true
+    change_happiness(1)
+    food.setAttribute('visible', false)
+}
+
+
 function addSadAnimation(entity) {
     var dogPos = entity.getAttribute('position')
     var dogPos2 = Object.assign({}, dogPos);
@@ -366,6 +377,10 @@ window.addEventListener("keydown", function (event) {
             break;
         case "t":
             tossFood()
+            break;
+        case "c":
+            callDuck()
+            dog.emit('bounce')
             break;
     }
 })
