@@ -12,6 +12,7 @@ var happiness = 5
 var squeak = new Audio('squeeky.wav');
 var longsqueak = new Audio('longsqueak.wav');
 var foodPos = {x: 0, y: 0, z: 0}
+var tossing = false
 
 function init(){
     console.log("game begin")
@@ -46,13 +47,16 @@ function init(){
         isEmoting = false
     });
 
-    setupClickable("Call")
-    setupClickable("Feed")
-    setupClickable("Throw")
+    setupClickable("Call", callDuck)
+    setupClickable("Point", enableToss)
 
     isWalking = false
     dogwalk()
     setTimeout(loadTimeout, 5000);
+}
+
+function enableToss(){
+    tossing = true;
 }
 
 function loadTimeout(){
@@ -71,7 +75,7 @@ function change_happiness(num) {
     }
 }
 
-function setupClickable(id){
+function setupClickable(id, func){
     var id = "#" + id
     document.querySelector(id).addEventListener('mouseenter', function(e){
         document.querySelector(id).setAttribute('color', 'yellow')
@@ -79,9 +83,7 @@ function setupClickable(id){
     document.querySelector(id).addEventListener('mouseleave', function(e){
         document.querySelector(id).setAttribute('color', 'white')
     })
-    document.querySelector(id).addEventListener('click', function(e){
-        console.log(id)
-    })
+    document.querySelector(id).addEventListener('click', func)
 }
 
 function onclick() {
@@ -351,17 +353,20 @@ function addRandomWalk(entity) {
 }
 
 function tossFood() {
-    camPos = camera.getAttribute('position')
-    camRot = camera.getAttribute('rotation')
-    if (-camRot.x < 85) {
-        dist = camPos.y / Math.tan(d2r(-camRot.x))
-        foodPos = { x: camPos.x + dist * Math.cos(d2r(camRot.y) + Math.PI/2),
-                    y: 0,
-                    z: camPos.z + dist * -Math.sin(d2r(camRot.y) + Math.PI/2)}
-        foodOut = true
+    if(tossing){
+        camPos = camera.getAttribute('position')
+        camRot = camera.getAttribute('rotation')
+        if (-camRot.x < 85) {
+            dist = camPos.y / Math.tan(d2r(-camRot.x))
+            foodPos = { x: camPos.x + dist * Math.cos(d2r(camRot.y) + Math.PI/2),
+                        y: 0,
+                        z: camPos.z + dist * -Math.sin(d2r(camRot.y) + Math.PI/2)}
+            foodOut = true
 
-        food.setAttribute('position', foodPos, true)
-        food.setAttribute('visible', true)
+            food.setAttribute('position', foodPos, true)
+            food.setAttribute('visible', true)
+            tossing = false
+        }
     }
 }
 
